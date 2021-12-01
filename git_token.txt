@@ -1,9 +1,0 @@
-Github Token: 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
-
-https://radixdt2120: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@github.com/rx-cms-projects/radixweb-strapi.git
-
-https://radixdt2120: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@github.com/rx-cms-projects/radixweb-nuxt.git
-
-
-docker-compose up
-
