@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import services from '../services/service'
+import { getNowTime, getTodayDate } from '../utils/Utility'
 
 const AddInOut = ({data, setData}) => {
 
@@ -15,7 +16,8 @@ const AddInOut = ({data, setData}) => {
     const [isOutTimeNull, setIsOutTimeNull] = useState(false)
 
     useEffect(() => {
-        if(Object.keys(data).length !== 0){
+        console.log(data);
+        if(Object.keys(data).length !== 0 && data.Timings.length > 0){
             const myData = data.Timings
             var lastnode = myData[myData.length-1]
             if(myData.length > 0 && !(lastnode.OutTime === null) && !(lastnode.OutTime.includes("00:00:00"))){
@@ -29,7 +31,7 @@ const AddInOut = ({data, setData}) => {
                 delete tempForm.id
                 setFormData({...tempForm})
             }
-        }
+        } 
     }, [data])
 
     const handleChange = (e) => {
@@ -41,14 +43,16 @@ const AddInOut = ({data, setData}) => {
         e.preventDefault();
         const AppendIn = !formData.InTime.includes(":00.000") ? formData.InTime +":00.000" : formData.InTime
         const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(":00.000")) ? formData.OutTime +":00.000" : formData.OutTime
-        if(data){
 
+        
+        if(Object.keys(data).length !== 0){
             if(isOutTimeNull){
                 const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))
                 tempData.OutTime = AppendOut
                 tempData.BreakDescription = formData.BreakDescription
                 //tempData.WorkDescription = formData.WorkDescription
             } else {
+                 
                 data.Timings.push({
                     ...formData,InTime : AppendIn,OutTime : null,
                 })
@@ -56,6 +60,20 @@ const AddInOut = ({data, setData}) => {
 
             const res = await services.updateTodayData(data.id,data)
             setData(res)
+        } else {
+            const body = {
+                user : "1", 
+                Date : getTodayDate(),
+                Timings : [{
+                    InTime : formData.InTime,
+                    WorkDescription : formData.WorkDescription
+                }]
+            }
+
+            const data = await services.addNewData(body)
+            setData(data)
+            console.log(data);
+
         }
     }
     const handleOutSubmit = async (e) => {
@@ -74,18 +92,11 @@ const AddInOut = ({data, setData}) => {
     }
 
     const handleBtnClick = () => {
-        var hour = new Date().getHours();
-        var minute = new Date().getMinutes();
-        if(minute < 10) {
-            minute = `0${minute}`
-        }
-        if(hour < 10){
-            hour = `0${hour}`
-        }
+        const nowTime = getNowTime()
         if(isOutTimeNull){
-            setFormData({...formData,OutTime : `${hour}:${minute}`, })
+            setFormData({...formData,OutTime : nowTime, })
         } else {
-            setFormData({...formData,InTime : `${hour}:${minute}`,})
+            setFormData({...formData,InTime : nowTime,})
         }
     }
 

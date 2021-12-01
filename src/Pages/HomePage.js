@@ -9,6 +9,7 @@ import TodayTiming from '../Components/TodayTiming'
 import axios from 'axios'
 import StratClock from '../utils/TimeClock'
 import service from '../services/service'
+import { getTodayDate } from '../utils/Utility'
 
 const HomePage = () => {
     var dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -27,12 +28,14 @@ const HomePage = () => {
         setTimer(new Date().toString().split(" ")[4])
     }
 
-    
     useEffect(async () => {
-        setInterval(nowTime,1000)
+        //Today's time (Watch)
+        setInterval(() => {
+            setTimer(new Date().toString().split(" ")[4])
+        },1000)
+
         const getData = async () => {
-            const date = `${new Date().getFullYear()}-${new Date().getMonth() + 1}-${new Date().getDate()}`
-            const Timings = await service.getTodayData(1,date)
+            const Timings = await service.getTodayData(1,getTodayDate())
 
             if(Timings.length > 0){
                 setTotalTime({...Timings[0]})
@@ -55,8 +58,8 @@ const HomePage = () => {
         var TempInTime = "00:00"
         
         if( data.length > 0 ){
+            
             const firstInTime = data[0].InTime.slice(0,5)
-            //setInTime(data[0].InTime.slice(0,5))
             setInTime(firstInTime)
             
             data.map(item => {
@@ -67,7 +70,6 @@ const HomePage = () => {
                     TempInTime = addTime(TempInTime,subtractTime(startTime, endTime))
                 }
             })
-
             const lastNode = data[data.length-1]
             
             clearInterval(inInterval)

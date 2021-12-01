@@ -1,6 +1,11 @@
 import React from 'react'
 
 const TodayTiming = ({data}) => {
+
+    const handleEditClick = (id) => {
+        console.log(id);
+    }
+
     return (
         <div>
             <table className="table table-bordered table-hover table-striped table">
@@ -10,6 +15,7 @@ const TodayTiming = ({data}) => {
                         <th>Out Time</th>
                         <th>Work Description</th>
                         <th>Break Description</th>
+                        <th>Edit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -18,6 +24,7 @@ const TodayTiming = ({data}) => {
                         <td>{item.OutTime && item.OutTime.slice(0,5)}</td>
                         <td>{item.WorkDescription}</td>
                         <td>{item.BreakDescription}</td>
+                        <td onClick={() => handleEditClick(item.id)}><i className="fa fa-edit"></i></td>
                     </tr>)}
                    
                 </tbody>
