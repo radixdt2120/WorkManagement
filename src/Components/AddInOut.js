@@ -1,0 +1,176 @@
+import React, { useEffect, useState } from 'react'
+import services from '../services/service'
+
+const AddInOut = ({data, setData}) => {
+
+    
+
+    const [formData, setFormData] = useState({
+        InTime : null,
+        WorkDescription : "",  
+        OutTime : null,
+        BreakDescription : "",
+    })    
+
+    const [isOutTimeNull, setIsOutTimeNull] = useState(false)
+
+    useEffect(() => {
+        if(Object.keys(data).length !== 0){
+            const myData = data.Timings
+            var lastnode = myData[myData.length-1]
+            if(myData.length > 0 && !(lastnode.OutTime === null) && !(lastnode.OutTime.includes("00:00:00"))){
+                setIsOutTimeNull(false)
+            } else {
+                setIsOutTimeNull(true)
+            }
+    
+            if(myData.length > 0){
+                const tempForm = {...lastnode}
+                delete tempForm.id
+                setFormData({...tempForm})
+            }
+        }
+    }, [data])
+
+    const handleChange = (e) => {
+        const {name,value} = e.target
+        setFormData({...formData , [name] : value})
+    }
+
+    const handleInSubmit = async (e) => {
+        e.preventDefault();
+        const AppendIn = !formData.InTime.includes(":00.000") ? formData.InTime +":00.000" : formData.InTime
+        const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(":00.000")) ? formData.OutTime +":00.000" : formData.OutTime
+        if(data){
+
+            if(isOutTimeNull){
+                const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))
+                tempData.OutTime = AppendOut
+                tempData.BreakDescription = formData.BreakDescription
+                //tempData.WorkDescription = formData.WorkDescription
+            } else {
+                data.Timings.push({
+                    ...formData,InTime : AppendIn,OutTime : null,
+                })
+            }
+
+            const res = await services.updateTodayData(data.id,data)
+            setData(res)
+        }
+    }
+    const handleOutSubmit = async (e) => {
+        e.preventDefault();
+
+        const AppendIn = !formData.InTime.includes(":00.000") ? formData.InTime +":00.000" : formData.InTime
+        const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(":00.000")) ? formData.OutTime +":00.000" : formData.OutTime
+        
+        const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes === ":00.000")
+        tempData.OutTime = AppendOut
+        tempData.BreakDescription = formData.BreakDescription
+        tempData.WorkDescription = formData.WorkDescription
+
+        const res = await services.updateTodayData(data.id,data)
+        setData(res)
+    }
+
+    const handleBtnClick = () => {
+        var hour = new Date().getHours();
+        var minute = new Date().getMinutes();
+        if(minute < 10) {
+            minute = `0${minute}`
+        }
+        if(hour < 10){
+            hour = `0${hour}`
+        }
+        if(isOutTimeNull){
+            setFormData({...formData,OutTime : `${hour}:${minute}`, })
+        } else {
+            setFormData({...formData,InTime : `${hour}:${minute}`,})
+        }
+    }
+
+    const handleOutTimeClick = () => {
+        const hour = new Date().getHours();
+        const minute = new Date().getMinutes();
+        if(minute < 10) {
+            minute = `0${minute}`
+        }
+        if(hour < 10){
+            hour = `0${hour}`
+        }
+        setFormData({
+            ...formData,
+            OutTime : `${hour}:${minute}`, 
+        })
+    }
+
+    return (
+        <div className="d-flex justify-content-evenly">
+            <button className={`btn btn-success w-25 ${isOutTimeNull && "disabled"}`}  data-bs-toggle="modal" data-bs-target="#InModal" onClick={handleBtnClick}>
+                In
+            </button>
+            <button className={`btn btn-danger w-25 ${!isOutTimeNull && "disabled"}`}  data-bs-toggle="modal" data-bs-target="#OutModal" onClick={handleBtnClick}>
+                Out
+            </button>
+
+            <div className="modal fade" tabIndex="-1" id="InModal" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" >
+                <div className="modal-dialog ">
+                    <div className="modal-content">
+                        <form action="" onSubmit={handleInSubmit}>
+                            <div className="modal-header  bg-success text-white">
+                                <h5 className="modal-title">ADD IN TIME</h5>
+                                <button type="button" className="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body bg-light">
+                                    <div className="d-flex justify-content-evenly gap-3 align-items-center my-2">
+                                        <label htmlFor="inTime" className="h5">InTime</label>
+                                        <input type="time" name="" className="form-control d-inline-block" id="inTime" name="InTime" value={formData.InTime} onChange={handleChange} />
+                                    </div>
+
+                                    <div className="my-2">
+                                        <label htmlFor="breakDesc" className="h5">Work description</label> <br />
+                                        <textarea type="text" name="" className="form-control" rows="3" id="breakDesc" placeholder="Work you have/will do in this time ... " name="WorkDescription" value={formData.WorkDescription} onChange={handleChange} />
+                                    </div>
+                            </div>
+                            <div className="modal-footer ">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Add in</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div className="modal fade" tabIndex="-1" id="OutModal" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" >
+                <div className="modal-dialog ">
+                    <div className="modal-content">
+                        <form action="" onSubmit={handleInSubmit}>
+                            <div className="modal-header bg-danger text-white">
+                                <h5 className="modal-title">ADD OUT TIME</h5>
+                                <button type="button" className="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body bg-light">
+                                    <div className="d-flex justify-content-evenly gap-3 align-items-center my-2">
+                                        <label htmlFor="inTime" className="h5">Out Time</label>
+                                        <input type="time" name="" className="form-control d-inline-block" id="inTime" name="OutTime" value={formData.OutTime} onChange={handleChange} />
+                                    </div>
+
+                                    <div className="my-2">
+                                        <label htmlFor="breakDesc" className="h5">Break description</label> <br />
+                                        <textarea type="text" name="" className="form-control" rows="3" id="breakDesc" placeholder="Reason of break ... " name="BreakDescription" value={formData.BreakDescription} onChange={handleChange} />
+                                    </div>
+                            </div>
+                            <div className="modal-footer ">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Add Out</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    )
+}
+
+export default AddInOut
