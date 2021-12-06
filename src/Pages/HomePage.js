@@ -58,7 +58,7 @@ const HomePage = () => {
         var TempInTime = "00:00"
         
         if( data.length > 0 ){
-            
+
             const firstInTime = data[0].InTime.slice(0,5)
             setInTime(firstInTime)
             
@@ -90,7 +90,7 @@ const HomePage = () => {
 
     return (
         <section className="">  
-            <TodayHeader timer={timer} />
+            
            
             <TimingDisplay inTime ={inTime} totalIn ={totalIn} totalOut={totalOut} />
            <section className="container-fluid">

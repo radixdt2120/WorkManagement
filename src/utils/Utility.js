@@ -20,4 +20,21 @@ const getNowTime = () => {
     return `${hour}:${minute}`
 }
 
-export {getTodayDate, getNowTime}
+const validateTime = (inTime, outTime) => {
+    const inHour = parseInt(inTime.split(":")[0])
+    const inMinute = parseInt(inTime.split(":")[1])
+
+    const outHour = parseInt(outTime.split(":")[0])
+    const outMinute = parseInt(outTime.split(":")[1])
+    
+    if(outHour < inHour)
+        return false
+    
+    if(outHour === inHour && outMinute <inMinute)
+        return false
+     
+    return true
+
+}
+
+export {getTodayDate, getNowTime,validateTime}

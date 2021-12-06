@@ -2,7 +2,7 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
 
-const Dashboard = () => {
+const Utils = () => {
 
     const [data, setData] = useState([])
 
@@ -171,4 +171,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default Utils

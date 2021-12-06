@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import services from '../services/service'
-import { getNowTime, getTodayDate } from '../utils/Utility'
+import { getNowTime, getTodayDate, validateTime } from '../utils/Utility'
 
 const AddInOut = ({data, setData}) => {
 
@@ -39,18 +39,24 @@ const AddInOut = ({data, setData}) => {
         setFormData({...formData , [name] : value})
     }
 
-    const handleInSubmit = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const AppendIn = !formData.InTime.includes(":00.000") ? formData.InTime +":00.000" : formData.InTime
-        const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(":00.000")) ? formData.OutTime +":00.000" : formData.OutTime
-
+        const AppendIn = !formData.InTime.includes(".000") ? formData.InTime +".000" : formData.InTime
+        const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(".000")) ? formData.OutTime +".000" : formData.OutTime
         
         if(Object.keys(data).length !== 0){
             if(isOutTimeNull){
-                const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))
-                tempData.OutTime = AppendOut
-                tempData.BreakDescription = formData.BreakDescription
-                //tempData.WorkDescription = formData.WorkDescription
+                //const isValid = validateTime(formData.InTime,formData.OutTime)
+                const isValid = validateTime(AppendIn,AppendOut)
+                if(isValid){
+                    const tempData = {...data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))}
+                    tempData.OutTime = AppendOut
+                    tempData.BreakDescription = formData.BreakDescription
+                    tempData.WorkDescription = formData.WorkDescription
+                } else {
+                    alert("wrong entry")
+                    return
+                }
             } else {
                  
                 data.Timings.push({
@@ -71,24 +77,10 @@ const AddInOut = ({data, setData}) => {
             }
 
             const data = await services.addNewData(body)
-            setData(data)
-            console.log(data);
+            //setData(data)
+            //console.log(data);
 
         }
-    }
-    const handleOutSubmit = async (e) => {
-        e.preventDefault();
-
-        const AppendIn = !formData.InTime.includes(":00.000") ? formData.InTime +":00.000" : formData.InTime
-        const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(":00.000")) ? formData.OutTime +":00.000" : formData.OutTime
-        
-        const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes === ":00.000")
-        tempData.OutTime = AppendOut
-        tempData.BreakDescription = formData.BreakDescription
-        tempData.WorkDescription = formData.WorkDescription
-
-        const res = await services.updateTodayData(data.id,data)
-        setData(res)
     }
 
     const handleBtnClick = () => {
@@ -100,20 +92,7 @@ const AddInOut = ({data, setData}) => {
         }
     }
 
-    const handleOutTimeClick = () => {
-        const hour = new Date().getHours();
-        const minute = new Date().getMinutes();
-        if(minute < 10) {
-            minute = `0${minute}`
-        }
-        if(hour < 10){
-            hour = `0${hour}`
-        }
-        setFormData({
-            ...formData,
-            OutTime : `${hour}:${minute}`, 
-        })
-    }
+   
 
     return (
         <div className="d-flex justify-content-evenly">
@@ -127,7 +106,7 @@ const AddInOut = ({data, setData}) => {
             <div className="modal fade" tabIndex="-1" id="InModal" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" >
                 <div className="modal-dialog ">
                     <div className="modal-content">
-                        <form action="" onSubmit={handleInSubmit}>
+                        <form action="" onSubmit={handleSubmit}>
                             <div className="modal-header  bg-success text-white">
                                 <h5 className="modal-title">ADD IN TIME</h5>
                                 <button type="button" className="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
@@ -135,7 +114,7 @@ const AddInOut = ({data, setData}) => {
                             <div className="modal-body bg-light">
                                     <div className="d-flex justify-content-evenly gap-3 align-items-center my-2">
                                         <label htmlFor="inTime" className="h5">InTime</label>
-                                        <input type="time" name="" className="form-control d-inline-block" id="inTime" name="InTime" value={formData.InTime} onChange={handleChange} />
+                                        <input type="time" name="" className="form-control d-inline-block" id="inTime" name="InTime" value={formData.InTime} onChange={handleChange} step="-1" />
                                     </div>
 
                                     <div className="my-2">
@@ -145,17 +124,17 @@ const AddInOut = ({data, setData}) => {
                             </div>
                             <div className="modal-footer ">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-success" data-bs-dismiss="modal">Add in</button>
+                                <button type="submit" className="btn btn-success">Add in</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
 
-            <div className="modal fade" tabIndex="-1" id="OutModal" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" >
+            <div className="modal fade" tabIndex="2" id="OutModal" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" >
                 <div className="modal-dialog ">
                     <div className="modal-content">
-                        <form action="" onSubmit={handleInSubmit}>
+                        <form action="" onSubmit={handleSubmit}>
                             <div className="modal-header bg-danger text-white">
                                 <h5 className="modal-title">ADD OUT TIME</h5>
                                 <button type="button" className="btn-close " data-bs-dismiss="modal" aria-label="Close"></button>
@@ -163,7 +142,7 @@ const AddInOut = ({data, setData}) => {
                             <div className="modal-body bg-light">
                                     <div className="d-flex justify-content-evenly gap-3 align-items-center my-2">
                                         <label htmlFor="inTime" className="h5">Out Time</label>
-                                        <input type="time" name="" className="form-control d-inline-block" id="inTime" name="OutTime" value={formData.OutTime} onChange={handleChange} />
+                                        <input type="time" name="" step="2" className="form-control d-inline-block" id="inTime" name="OutTime" value={formData.OutTime} onChange={handleChange} />
                                     </div>
 
                                     <div className="my-2">
@@ -173,13 +152,12 @@ const AddInOut = ({data, setData}) => {
                             </div>
                             <div className="modal-footer ">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Add Out</button>
+                                <button type="submit" className="btn btn-danger" >Add Out</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-            
         </div>
     )
 }
