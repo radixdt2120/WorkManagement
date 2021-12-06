@@ -9,7 +9,7 @@ import Todo from '../Components/Todo/Todo'
 
 const HomePage = () => {
     console.log("hello ji");
-    var dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
     
     const [totalTime, setTotalTime] = useState({})
 

@@ -32,7 +32,7 @@ const TimingDisplay = ({totalTime, setTotalTime}) => {
                 const startTime = item.InTime
                 const endTime = item.OutTime
 
-                if(endTime !== null && !endTime.includes("0:00:00")){
+                if(endTime !== null && endTime !== ""){
                     TempInTime = addTime(TempInTime,subtractTime(startTime, endTime))
                 }
             })
@@ -41,7 +41,7 @@ const TimingDisplay = ({totalTime, setTotalTime}) => {
             clearInterval(inInterval)
             clearInterval(outInterval)
 
-            if(lastNode.OutTime !== null && !lastNode.OutTime.includes("0:00:00")){
+            if(lastNode.OutTime !== null && lastNode.OutTime !== ""){
                 setTotalIn(val => TempInTime)
                 setOutInterval(setInterval(() => setTotalOut(val => subtractTime(TempInTime,subtractTime(firstInTime,new Date().toString().split(" ")[4]))),1000))
                 

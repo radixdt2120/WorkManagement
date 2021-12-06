@@ -5,7 +5,7 @@ import { getNowTime, getTodayDate, validateTime } from '../utils/Utility'
 const AddInOut = ({data, setData}) => {
 
     
-
+    var dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const [formData, setFormData] = useState({
         InTime : null,
         WorkDescription : "",  
@@ -20,7 +20,7 @@ const AddInOut = ({data, setData}) => {
         if(Object.keys(data).length !== 0 && data.Timings.length > 0){
             const myData = data.Timings
             var lastnode = myData[myData.length-1]
-            if(myData.length > 0 && !(lastnode.OutTime === null) && !(lastnode.OutTime.includes("00:00:00"))){
+            if(myData.length > 0 && !(lastnode.OutTime === null) && !(lastnode.OutTime === "")){
                 setIsOutTimeNull(false)
             } else {
                 setIsOutTimeNull(true)
@@ -41,15 +41,12 @@ const AddInOut = ({data, setData}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const AppendIn = !formData.InTime.includes(".000") ? formData.InTime +".000" : formData.InTime
-        const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(".000")) ? formData.OutTime +".000" : formData.OutTime
-        
-        if(Object.keys(data).length !== 0){
-            console.log(isOutTimeNull);
-            if(isOutTimeNull){
+
+        if(Object.keys(data).length !== 0) {
+            if(isOutTimeNull) {
                 //const isValid = validateTime(formData.InTime,formData.OutTime)
-                const isValid = validateTime(AppendIn,AppendOut)
-                console.log(AppendOut,formData.OutTime);
+                const isValid = validateTime(formData.InTime,formData.OutTime)
+                console.log(isValid);
                 if(isValid){
                     const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))
                     tempData.OutTime = formData.OutTime
@@ -60,28 +57,38 @@ const AddInOut = ({data, setData}) => {
                     return
                 }
             } else {
-                 
                 data.Timings.push({
-                    ...formData,InTime : AppendIn,OutTime : null,
+                    ...formData,OutTime : null,
                 })
             }
             console.log(data);
-            const res = await services.updateTodayData(data.id,data)
-            setData(res)
+            //const res =  await services.updateTodayData(data.id,data)
+            const res =  await services.updateTodayData(data.id,data)
+            if(res){
+                setData(res)
+                setFormData({...formData , WorkDescription : ""})
+                const myModal = document.getElementById("InModal")
+                myModal.setAttribute('data-bs-dismiss', 'modal');
+                myModal.click()
+            }
         } else {
             const body = {
                 user : "1", 
                 Date : getTodayDate(),
+                Day : dayOfWeek[new Date().getUTCDay()] ,
                 Timings : [{
                     InTime : formData.InTime,
                     WorkDescription : formData.WorkDescription
                 }]
             }
 
-            const data = await services.addNewData(body)
-            //setData(data)
-            //console.log(data);
-
+            const newData = await services.addNewData(body)
+            if(newData) {
+                setData(newData)
+                const myModal = document.getElementById("InModal")
+                myModal.setAttribute('data-bs-dismiss', 'modal');
+                myModal.click()
+            }
         }
     }
 
@@ -126,7 +133,7 @@ const AddInOut = ({data, setData}) => {
                             </div>
                             <div className="modal-footer ">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-success">Add in</button>
+                                <button type="submit" className="btn btn-success" >Add in</button>
                             </div>
                         </form>
                     </div>
@@ -154,7 +161,7 @@ const AddInOut = ({data, setData}) => {
                             </div>
                             <div className="modal-footer ">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-danger" >Add Out</button>
+                                <button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Add Out</button>
                             </div>
                         </form>
                     </div>

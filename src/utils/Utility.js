@@ -16,16 +16,25 @@ const getNowTime = () => {
 }
 
 const validateTime = (inTime, outTime) => {
+    console.log(inTime, outTime);
     const inHour = parseInt(inTime.split(":")[0])
     const inMinute = parseInt(inTime.split(":")[1])
 
     const outHour = parseInt(outTime.split(":")[0])
     const outMinute = parseInt(outTime.split(":")[1])
     
-    if(outHour < inHour)
+    const nowHour = parseInt(new Date().getHours())
+    const nowMinute = parseInt(new Date().getMinutes())
+
+
+
+    if(outHour < inHour || outHour > nowHour)
         return false
     
-    if(outHour === inHour && outMinute <inMinute)
+    if(outHour === inHour  && outMinute <inMinute)
+        return false
+        
+    if(outHour === nowHour  && outMinute < nowMinute )
         return false
      
     return true
