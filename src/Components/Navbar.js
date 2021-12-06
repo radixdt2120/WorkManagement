@@ -10,7 +10,7 @@ const Navbar = () => {
                 <div className="container-fluid p-2 px-5">
                     <div className="navbar-brand text-decoration-none">
                         <Link to="/" className="text-decoration-none text-white" >
-                            LOGO
+                            <img src="./time-management-icon.jpg" height="85px" />
                         </Link>
                     </div>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
