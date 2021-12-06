@@ -8,7 +8,7 @@ const addTime = (fromTime , toTime) => {
     var hour = toTimeHour + fromTimeHour;
     var minute = toTimeMinute + fromTimeMinute;
     
-    if(minute > 60){
+    if(minute >= 60){
         minute =  minute - 60;
         hour = hour + 1;
     }

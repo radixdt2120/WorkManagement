@@ -1,11 +1,6 @@
 const getTodayDate = () =>{
-    var year  = new Date().getFullYear()
-    var month  = new Date().getMonth() +1
-    month = month < 10 ? `0${month}` : month
-    var day  = new Date().getDate()
-    day = day < 10 ? `0${day}` : day
-    const date = `${year}-${month}-${day}`
-    return date
+    var todayDate = new Date().toISOString().slice(0, 10);
+    return todayDate
 }
 
 const getNowTime = () => {

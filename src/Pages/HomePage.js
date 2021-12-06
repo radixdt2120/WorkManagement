@@ -10,6 +10,7 @@ import axios from 'axios'
 import StratClock from '../utils/TimeClock'
 import service from '../services/service'
 import { getTodayDate } from '../utils/Utility'
+import Todo from '../Components/Todo/Todo'
 
 const HomePage = () => {
     var dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -24,14 +25,14 @@ const HomePage = () => {
     const [inInterval, setInInterval] = useState("")
     const [outInterval, setOutInterval] = useState("")
 
-    const nowTime = () => {
-        setTimer(new Date().toString().split(" ")[4])
-    }
+    // const nowTime = () => {
+    //     setTimer(new Date().toString().split(" ")[4])
+    // }
 
     useEffect(async () => {
         //Today's time (Watch)
         setInterval(() => {
-            setTimer(new Date().toString().split(" ")[4])
+            setTimer(new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }))
         },1000)
 
         const getData = async () => {
@@ -101,6 +102,17 @@ const HomePage = () => {
                     <div className="col-12 col-md-8">
                         <TodayTiming data={totalTime} />
                     </div>
+                    {/* todos */}
+
+                    <div className="col-12 col-md-4 mt-lg-5">
+                        {/* <AddInOut data={totalTime} setData={setTotalTime} /> */}
+                    </div>
+
+                    <div className="col-12 col-md-8 mt-lg-5">
+                        <Todo />
+                    </div>
+                    
+
                 </div>
            </section>
         {totalTime.length > 0 && <> 
