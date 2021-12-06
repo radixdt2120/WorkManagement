@@ -1,14 +1,16 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-
+import React, { useContext, useEffect, useState } from 'react'
+import ContextApis from '../context/context'
 
 const Utils = () => {
 
     const [data, setData] = useState([])
 
+    const value = useContext(ContextApis)
+    console.log(value);
     const handleClick = async  (id) => {
         var arr = []
-        const item1 = data.find(item => item.id == id)
+        const item1 = data.find(item => item.id === id)
         const url = `http://52.66.238.175:1337/pages/${id}`
         // const res = await axios.get(url)
         // const data1 = await res.data
@@ -154,7 +156,12 @@ const Utils = () => {
     }, [])
     return (
         <div>
+            <button>
+        
+            </button>
             <ul>
+
+
                 {data.map(item =>     <li key={item.id}>
                         {item.Title}
                         <button onClick={() => {

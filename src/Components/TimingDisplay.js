@@ -1,7 +1,58 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import addTime from '../utils/TimeAddition'
+import subtractTime from '../utils/TimeSubtract'
 import Clock from './Clock'
 
-const TimingDisplay = ({inTime,totalIn,totalOut}) => {
+const TimingDisplay = ({totalTime, setTotalTime}) => {
+
+
+    //const [totalTime, setTotalTime] = useState({})
+
+    const [inTime, setInTime] = useState("00:00")
+    const [totalIn, setTotalIn] = useState("00:00")
+    const [totalOut, setTotalOut] = useState("00:00")
+    const [inInterval, setInInterval] = useState("")
+    const [outInterval, setOutInterval] = useState("")
+
+    useEffect(() => {
+        if(Object.keys(totalTime).length !== 0){
+            totalInFunction(totalTime.Timings)
+        }
+    }, [totalTime]);
+
+    const totalInFunction = (data) => {
+        var TempInTime = "00:00"
+        
+        if( data.length > 0 ){
+
+            const firstInTime = data[0].InTime.slice(0,5)
+            setInTime(firstInTime)
+            
+            data.map(item => {
+                const startTime = item.InTime
+                const endTime = item.OutTime
+
+                if(endTime !== null && !endTime.includes("0:00:00")){
+                    TempInTime = addTime(TempInTime,subtractTime(startTime, endTime))
+                }
+            })
+            const lastNode = data[data.length-1]
+            
+            clearInterval(inInterval)
+            clearInterval(outInterval)
+
+            if(lastNode.OutTime !== null && !lastNode.OutTime.includes("0:00:00")){
+                setTotalIn(val => TempInTime)
+                setOutInterval(setInterval(() => setTotalOut(val => subtractTime(TempInTime,subtractTime(firstInTime,new Date().toString().split(" ")[4]))),1000))
+                
+            } else {
+                const lastIn = lastNode.InTime.slice(0,5)
+                setInInterval(setInterval(() => setTotalIn(val => addTime(TempInTime,subtractTime(lastIn,new Date().toString().split(" ")[4]))),1000))
+                setTotalOut(val => subtractTime(TempInTime,subtractTime(firstInTime,lastIn)))
+            }
+        }
+    }
+
     return (
         <div className="text-center flex-wrap d-flex gap-2   justify-content-center" >
             <Clock bg="primary" title="First In" time={inTime} />

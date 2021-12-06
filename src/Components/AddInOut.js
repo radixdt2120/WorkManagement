@@ -45,12 +45,14 @@ const AddInOut = ({data, setData}) => {
         const AppendOut = (formData.OutTime != null && !formData.OutTime.includes(".000")) ? formData.OutTime +".000" : formData.OutTime
         
         if(Object.keys(data).length !== 0){
+            console.log(isOutTimeNull);
             if(isOutTimeNull){
                 //const isValid = validateTime(formData.InTime,formData.OutTime)
                 const isValid = validateTime(AppendIn,AppendOut)
+                console.log(AppendOut,formData.OutTime);
                 if(isValid){
-                    const tempData = {...data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))}
-                    tempData.OutTime = AppendOut
+                    const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))
+                    tempData.OutTime = formData.OutTime
                     tempData.BreakDescription = formData.BreakDescription
                     tempData.WorkDescription = formData.WorkDescription
                 } else {
@@ -63,7 +65,7 @@ const AddInOut = ({data, setData}) => {
                     ...formData,InTime : AppendIn,OutTime : null,
                 })
             }
-
+            console.log(data);
             const res = await services.updateTodayData(data.id,data)
             setData(res)
         } else {
