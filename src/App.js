@@ -3,15 +3,14 @@ import {
   BrowserRouter as Router,
   Routes ,
   Route,
-  Link
+  
 } from "react-router-dom";
 import Navbar from './Components/Navbar';
-import TodayHeader from "./Components/TodayHeader";
 import Dashboard from './Pages/Dashboard';
 import HomePage from './Pages/HomePage';
 import Page404 from "./Pages/Page404";
+import Profile from "./Pages/Profile";
 import Utils from "./Pages/Utils";
-import ContextApis from "./context/context";
 
 function App() {
   return (
@@ -36,6 +35,7 @@ function App() {
                 <Route path="/"  element={<HomePage/>} />
                 <Route path="/dashboard" element={<Dashboard />}/>
                 <Route path="/util" element={<Utils />}/>
+                <Route path="/profile" element={<Profile />}/>
                 <Route path="*" element={<Page404 />} />
             </Routes>
             </div>

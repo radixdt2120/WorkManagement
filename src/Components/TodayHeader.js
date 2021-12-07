@@ -15,11 +15,11 @@ const TodayHeader = () => {
             <div className=" d-flex flex-wrap justify-content-between  p-1 px-4">
                 <div>
                     {/* Date : {new Date().getDate()+ "/"+(new Date().getMonth()+1)+ "/"+new Date().getFullYear()} */}
-                    <i class="fas fa-calendar-week"></i> {getTodayDate()}
+                    <i className="fas fa-calendar-week"></i> {getTodayDate()}
                 </div>
                 
                 <div className="">
-                <i class="fas fa-clock"></i> {timer}
+                <i className="fas fa-clock"></i> {timer}
                 </div>
             </div>
         </div>

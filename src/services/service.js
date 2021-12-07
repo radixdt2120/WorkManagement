@@ -8,7 +8,6 @@ class services {
     }
 
     static async addNewData(newData){
-        console.log(newData);
         const res = await axios.post(`${BASR_URL}/working-times`,newData)
         return await res.data
     }

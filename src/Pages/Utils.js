@@ -7,7 +7,6 @@ const Utils = () => {
     const [data, setData] = useState([])
 
     const value = useContext(ContextApis)
-    console.log(value);
     const handleClick = async  (id) => {
         var arr = []
         const item1 = data.find(item => item.id === id)

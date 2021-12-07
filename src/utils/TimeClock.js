@@ -17,7 +17,6 @@ const StratClock = (startTime,setTemp) => {
     minute < 10 && (minute = `0${minute}`)
     
     hour < 10 && (hour = `0${hour}`)
-    console.log(`${hour}:${minute}`);
     setTimeout(() => {setTemp(`${hour}:${minute}`)},60000)
 }
 

@@ -31,11 +31,11 @@ const validateTime = (inTime, outTime) => {
     if(outHour < inHour || outHour > nowHour)
         return false
     
-    if(outHour === inHour  && outMinute <inMinute)
+    if((outHour === inHour  && outMinute < inMinute) || (outHour === nowHour  && outMinute > nowMinute))
         return false
         
-    if(outHour === nowHour  && outMinute < nowMinute )
-        return false
+    // if(outHour === nowHour  && outMinute < nowMinute)
+    //     return false
      
     return true
 

@@ -8,8 +8,6 @@ import Todo from '../Components/Todo/Todo'
 
 
 const HomePage = () => {
-    console.log("hello ji");
-    
     
     const [totalTime, setTotalTime] = useState({})
 
@@ -26,7 +24,7 @@ const HomePage = () => {
 
 
     return (
-        <section className="">  
+        <section className="">
             <TimingDisplay totalTime={totalTime} />
            <section className="container-fluid">
                 <div className="row">
@@ -34,7 +32,7 @@ const HomePage = () => {
                         <AddInOut data={totalTime} setData={setTotalTime} />
                     </div>
                     <div className="col-12 col-md-8">
-                        <TodayTiming data={totalTime} />
+                        <TodayTiming totalTime={totalTime} setTotalTime={setTotalTime} />
                     </div>
                     {/* todos */}
 

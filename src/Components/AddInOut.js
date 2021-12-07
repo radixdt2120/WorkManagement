@@ -2,36 +2,34 @@ import React, { useEffect, useState } from 'react'
 import services from '../services/service'
 import { getNowTime, getTodayDate, validateTime } from '../utils/Utility'
 
-const AddInOut = ({data, setData}) => {
+const initialForm = {
+    InTime : "",
+    WorkDescription : "",  
+    OutTime : "",
+    BreakDescription : "",
+}
 
+const AddInOut = ({data, setData}) => {
     
     var dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    const [formData, setFormData] = useState({
-        InTime : null,
-        WorkDescription : "",  
-        OutTime : null,
-        BreakDescription : "",
-    })    
+    const [formData, setFormData] = useState({...initialForm})    
 
     const [isOutTimeNull, setIsOutTimeNull] = useState(false)
 
     useEffect(() => {
-        console.log(data);
         if(Object.keys(data).length !== 0 && data.Timings.length > 0){
             const myData = data.Timings
             var lastnode = myData[myData.length-1]
-            if(myData.length > 0 && !(lastnode.OutTime === null) && !(lastnode.OutTime === "")){
+            if(!(lastnode.OutTime === null) && !(lastnode.OutTime === "")){
                 setIsOutTimeNull(false)
+                setFormData({...initialForm})
             } else {
                 setIsOutTimeNull(true)
-            }
-    
-            if(myData.length > 0){
                 const tempForm = {...lastnode}
                 delete tempForm.id
                 setFormData({...tempForm})
             }
-        } 
+        }
     }, [data])
 
     const handleChange = (e) => {
@@ -41,35 +39,48 @@ const AddInOut = ({data, setData}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if(Object.keys(data).length !== 0) {
-            if(isOutTimeNull) {
-                //const isValid = validateTime(formData.InTime,formData.OutTime)
-                const isValid = validateTime(formData.InTime,formData.OutTime)
-                console.log(isValid);
-                if(isValid){
-                    const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime.includes("00:00:00"))
+            var isValid = true
+            if(!isOutTimeNull){
+                if(data.Timings.length > 0){
+                    isValid = validateTime(data.Timings[data.Timings.length-1].OutTime,formData.InTime)   
+                } else {
+                    isValid = true
+                }
+            } else {
+                isValid = validateTime(formData.InTime,formData.OutTime)
+            }
+
+            if(isValid){
+                if(isOutTimeNull) {
+                    const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime === "")
                     tempData.OutTime = formData.OutTime
                     tempData.BreakDescription = formData.BreakDescription
                     tempData.WorkDescription = formData.WorkDescription
                 } else {
-                    alert("wrong entry")
-                    return
+                    data.Timings.push({
+                        ...formData,OutTime : null,
+                    })
                 }
             } else {
-                data.Timings.push({
-                    ...formData,OutTime : null,
-                })
+                alert("wrong entry")
+                return
             }
-            console.log(data);
+            console.log(data.Timings);
             //const res =  await services.updateTodayData(data.id,data)
-            const res =  await services.updateTodayData(data.id,data)
+            var res =  await services.updateTodayData(data.id,data)
+            console.log(res);
             if(res){
                 setData(res)
                 setFormData({...formData , WorkDescription : ""})
-                const myModal = document.getElementById("InModal")
+                const myModal = document.getElementById("closeIn")
                 myModal.setAttribute('data-bs-dismiss', 'modal');
                 myModal.click()
+
+                const myModal2 = document.getElementById("closeOut")
+                myModal2.setAttribute('data-bs-dismiss', 'modal');
+                myModal2.click()
+                res = undefined
             }
         } else {
             const body = {
@@ -82,12 +93,13 @@ const AddInOut = ({data, setData}) => {
                 }]
             }
 
-            const newData = await services.addNewData(body)
+            var newData = await services.addNewData(body)
             if(newData) {
                 setData(newData)
-                const myModal = document.getElementById("InModal")
+                const myModal = document.getElementById("closeIn")
                 myModal.setAttribute('data-bs-dismiss', 'modal');
                 myModal.click()
+                newData = undefined
             }
         }
     }
@@ -123,16 +135,16 @@ const AddInOut = ({data, setData}) => {
                             <div className="modal-body bg-light">
                                     <div className="d-flex justify-content-evenly gap-3 align-items-center my-2">
                                         <label htmlFor="inTime" className="h5">InTime</label>
-                                        <input type="time" name="" className="form-control d-inline-block" id="inTime" name="InTime" value={formData.InTime} onChange={handleChange} step="-1" />
+                                        <input type="time"  className="form-control d-inline-block" id="inTime" name="InTime" value={formData.InTime} onChange={handleChange} step="2"/>
                                     </div>
 
                                     <div className="my-2">
                                         <label htmlFor="breakDesc" className="h5">Work description</label> <br />
-                                        <textarea type="text" name="" className="form-control" rows="3" id="breakDesc" placeholder="Work you have/will do in this time ... " name="WorkDescription" value={formData.WorkDescription} onChange={handleChange} />
+                                        <textarea type="text"  className="form-control" rows="3" id="breakDesc" placeholder="Work you have/will do in this time ... " name="WorkDescription" value={formData.WorkDescription} onChange={handleChange} />
                                     </div>
                             </div>
                             <div className="modal-footer ">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeIn" >Close</button>
                                 <button type="submit" className="btn btn-success" >Add in</button>
                             </div>
                         </form>
@@ -151,17 +163,17 @@ const AddInOut = ({data, setData}) => {
                             <div className="modal-body bg-light">
                                     <div className="d-flex justify-content-evenly gap-3 align-items-center my-2">
                                         <label htmlFor="inTime" className="h5">Out Time</label>
-                                        <input type="time" name="" step="2" className="form-control d-inline-block" id="inTime" name="OutTime" value={formData.OutTime} onChange={handleChange} />
+                                        <input type="time" step="2" className="form-control d-inline-block" id="inTime" name="OutTime" value={formData.OutTime} onChange={handleChange} />
                                     </div>
 
                                     <div className="my-2">
                                         <label htmlFor="breakDesc" className="h5">Break description</label> <br />
-                                        <textarea type="text" name="" className="form-control" rows="3" id="breakDesc" placeholder="Reason of break ... " name="BreakDescription" value={formData.BreakDescription} onChange={handleChange} />
+                                        <textarea type="text" className="form-control" rows="3" id="breakDesc" placeholder="Reason of break ... " name="BreakDescription" value={formData.BreakDescription} onChange={handleChange} />
                                     </div>
                             </div>
                             <div className="modal-footer ">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" className="btn btn-danger" data-bs-dismiss="modal">Add Out</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal"  id="closeOut">Close</button>
+                                <button type="submit" className="btn btn-danger" >Add Out</button>
                             </div>
                         </form>
                     </div>
