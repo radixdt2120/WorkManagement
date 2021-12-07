@@ -21,15 +21,13 @@ function App() {
         <div className="container-fluid p-0">
 
           <div className="row m-0">
-            <div className="col-1 p-0"> 
-              <div className="bg-dark p-4 full-height">
-                {/* <ContextApis>
-                  <Utils />
-                </ContextApis> */}
+            {/* <div className="col-1 p-0"> 
+              <div className="bg-dark p-4">
+                
 
               </div>
-            </div>
-            <div className="col-10 my-2">
+            </div> */}
+            <div className="col-12 my-2">
               
             <Routes>
                 <Route path="/"  element={<HomePage/>} />

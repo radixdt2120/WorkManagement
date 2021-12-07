@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import services from '../services/service'
+import closeModal from '../utils/CloseModal'
 import { getNowTime, getTodayDate, validateTime } from '../utils/Utility'
 
 const initialForm = {
@@ -29,6 +30,8 @@ const AddInOut = ({data, setData}) => {
                 delete tempForm.id
                 setFormData({...tempForm})
             }
+        } else {
+            setIsOutTimeNull(false)
         }
     }, [data])
 
@@ -73,13 +76,8 @@ const AddInOut = ({data, setData}) => {
             if(res){
                 setData(res)
                 setFormData({...formData , WorkDescription : ""})
-                const myModal = document.getElementById("closeIn")
-                myModal.setAttribute('data-bs-dismiss', 'modal');
-                myModal.click()
-
-                const myModal2 = document.getElementById("closeOut")
-                myModal2.setAttribute('data-bs-dismiss', 'modal');
-                myModal2.click()
+                closeModal("closeIn")
+                closeModal("closeOut")
                 res = undefined
             }
         } else {

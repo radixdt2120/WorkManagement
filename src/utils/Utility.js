@@ -26,7 +26,8 @@ const validateTime = (inTime, outTime) => {
     const nowHour = parseInt(new Date().getHours())
     const nowMinute = parseInt(new Date().getMinutes())
 
-
+    if(outHour === 0 && outMinute === 0)
+        return true
 
     if(outHour < inHour || outHour > nowHour)
         return false

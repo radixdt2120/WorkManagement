@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import services from '../services/service'
+import closeModal from '../utils/CloseModal'
+import { validateTime } from '../utils/Utility'
 const initialState = {
     InTime : "",
     WorkDescription : "",  
@@ -23,13 +25,55 @@ const TodayTiming = ({totalTime,setTotalTime}) => {
         setFormData({...formData , [name] : value})
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        console.log(formData);
+        
+        const data = {...totalTime}
+        var isOutTimeNull = false
+        var lastnode = data.Timings[data.Timings.length-1]
+        if(!(lastnode.OutTime === null) && !(lastnode.OutTime === "")){
+            isOutTimeNull = false
+        } else {
+            isOutTimeNull = true
+        }
 
+        var isValid = false
+        if(!isOutTimeNull){
+            if(data.Timings.length > 0){
+                isValid = validateTime(data.Timings[data.Timings.length-1].OutTime,formData.InTime)
+            } else {
+                isValid = true
+            }
+        } else {
+            isValid = validateTime(formData.InTime,formData.OutTime)
+        }
+        if(isValid){
+            var temp = data.Timings.map(item => {
+                if(item.id === formData.id)
+                {
+                    return formData
+                }
+                return item
+            })
+           var res =  await services.updateTodayData(totalTime.id,{...data,Timings : temp})
+           if(res){
+                setTotalTime(res)
+                // const myModal = document.getElementById("closeUpdate")
+                // myModal.setAttribute('data-bs-dismiss', 'modal');
+                // myModal.click()
+                closeModal("closeUpdate")
+                res = undefined
+            }
+        } else {
+            alert("wrong entry")
+        }
+
+        
     }
     const handleDeleteClick = async (id) => {
         if(window.confirm("delete entry?")){
             console.log(id);
-            
             const timings = [...totalTime.Timings]
             timings.splice(timings.indexOf(timings.find(item => item.id === id)),1)
             console.log(timings);
@@ -57,8 +101,8 @@ const TodayTiming = ({totalTime,setTotalTime}) => {
                         <td>{item.OutTime && item.OutTime.slice(0,5)}</td>
                         <td>{item.WorkDescription}</td>
                         <td>{item.BreakDescription}</td>
-                        <td onClick={() => handleEditClick(item.id)}  data-bs-toggle="modal" data-bs-target="#editTime"><i className="fa fa-edit"></i></td>
-                        <td onClick={() => handleDeleteClick(item.id)} ><i className="fa fa-trash"></i></td>
+                        <td className="cursor-pointer" onClick={() => handleEditClick(item.id)}  data-bs-toggle="modal" data-bs-target="#editTime"><i className="fa fa-edit"></i></td>
+                        <td className="cursor-pointer" onClick={() => handleDeleteClick(item.id)} ><i className="fa fa-trash"></i></td>
                     </tr>)}
                    
                 </tbody>
@@ -92,8 +136,8 @@ const TodayTiming = ({totalTime,setTotalTime}) => {
                                     </div>
                             </div>
                             <div className="modal-footer ">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeIn" >Close</button>
-                                <button type="submit" className="btn btn-success" >Add in</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeIn" id="closeUpdate">Close</button>
+                                <button type="submit" className="btn btn-success"  >Update Data</button>
                             </div>
                         </form>
                     </div>
