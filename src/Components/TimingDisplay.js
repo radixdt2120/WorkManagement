@@ -44,9 +44,11 @@ const TimingDisplay = ({totalTime, setTotalTime}) => {
 
             if(lastNode.OutTime !== null && lastNode.OutTime !== ""){
                 setTotalIn(val => TempInTime)
+                setTotalOut(val => subtractTime(TempInTime,subtractTime(firstInTime,new Date().toString().split(" ")[4])))
                 setOutInterval(setInterval(() => setTotalOut(val => subtractTime(TempInTime,subtractTime(firstInTime,new Date().toString().split(" ")[4]))),1000))
             } else {
                 const lastIn = lastNode.InTime.slice(0,5)
+                setTotalIn(val => addTime(TempInTime,subtractTime(lastIn,new Date().toString().split(" ")[4])))
                 setInInterval(setInterval(() => setTotalIn(val => addTime(TempInTime,subtractTime(lastIn,new Date().toString().split(" ")[4]))),1000))
                 setTotalOut(val => subtractTime(TempInTime,subtractTime(firstInTime,lastIn)))
             }

@@ -29,3 +29,10 @@ code {
 .cursor-pointer{
   cursor: pointer;
 }
+
+.bg-teal{
+  background-color: #f9f9f9;
+}
+.bg-gray{
+  background-color: white;
+}

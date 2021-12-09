@@ -7,6 +7,11 @@ class services {
         return await res.data
     }
 
+    static async getDataById(id){
+        const res = await axios.get(`${BASR_URL}/working-times?user.id=${id}`)
+        return await res.data
+    }
+
     static async addNewData(newData){
         const res = await axios.post(`${BASR_URL}/working-times`,newData)
         return await res.data

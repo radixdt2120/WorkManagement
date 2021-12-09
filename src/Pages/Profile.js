@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 const Profile = () => {
     const [title, setTitle] = useState("")
@@ -18,6 +18,17 @@ const Profile = () => {
             title : "smit"
         }
     ])
+    useEffect(() => {
+        console.log(todoList.sort((a,b) => {
+            if( a.title < b.title ){
+                return -1;
+              }
+              if ( a.title > b.title ){
+                return 1;
+              }
+              return 0;
+        }));
+    }, [])
 
     const handleChange= (e) =>{
         setTitle(e.target.value)   
@@ -56,6 +67,7 @@ const Profile = () => {
                 <option value="">asdf</option>
             </select>
             </form>
+            
         </div>
     )
 }

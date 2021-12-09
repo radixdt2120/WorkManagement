@@ -30,44 +30,24 @@ const TodayTiming = ({totalTime,setTotalTime}) => {
         console.log(formData);
         
         const data = {...totalTime}
-        var isOutTimeNull = false
-        var lastnode = data.Timings[data.Timings.length-1]
-        if(!(lastnode.OutTime === null) && !(lastnode.OutTime === "")){
-            isOutTimeNull = false
-        } else {
-            isOutTimeNull = true
-        }
-
-        var isValid = false
-        if(!isOutTimeNull){
-            if(data.Timings.length > 0){
-                isValid = validateTime(data.Timings[data.Timings.length-1].OutTime,formData.InTime)
-            } else {
-                isValid = true
+       
+        var temp = data.Timings.map(item => {
+            if(item.id === formData.id)
+            {
+                return formData
             }
-        } else {
-            isValid = validateTime(formData.InTime,formData.OutTime)
+            return item
+        })
+       var res =  await services.updateTodayData(totalTime.id,{...data,Timings : temp})
+       if(res){
+            setTotalTime(res)
+            // const myModal = document.getElementById("closeUpdate")
+            // myModal.setAttribute('data-bs-dismiss', 'modal');
+            // myModal.click()
+            closeModal("closeUpdate")
+            res = undefined
         }
-        if(isValid){
-            var temp = data.Timings.map(item => {
-                if(item.id === formData.id)
-                {
-                    return formData
-                }
-                return item
-            })
-           var res =  await services.updateTodayData(totalTime.id,{...data,Timings : temp})
-           if(res){
-                setTotalTime(res)
-                // const myModal = document.getElementById("closeUpdate")
-                // myModal.setAttribute('data-bs-dismiss', 'modal');
-                // myModal.click()
-                closeModal("closeUpdate")
-                res = undefined
-            }
-        } else {
-            alert("wrong entry")
-        }
+        
 
         
     }
