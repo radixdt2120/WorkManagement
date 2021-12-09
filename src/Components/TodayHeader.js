@@ -6,7 +6,7 @@ const TodayHeader = () => {
 
     useEffect(() => {
         setInterval(() => {
-            setTimer(new Date().toString().split(" ")[4])
+            setTimer(new Date().toLocaleString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true }))
         },1000)
     }, [])
 
