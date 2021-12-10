@@ -1,23 +1,15 @@
 import React, { useState } from 'react'
-import { useEffect } from 'react/cjs/react.development';
 
-const TodoList = ({todo}) => {
-    console.log(todo);
-    // const [todos , setTodos] = useState();
-
-    // useEffect(async () => {
-    //     const res = await fetch(`http://localhost:1338/todo-lists/${selectedList}`);
-    //     const data = await res.json();
-    //     setTodos(data.Todo);
-    // }, [])
-
+const TodoList = ({todo , handleDelete}) => {
+    console.log(handleDelete);
     return (
-        <div>
+        <div className="bg-todo border mt-5">
+            <h1 className="p-2">{todo ? todo.Title : ''}</h1>
             {todo &&
                todo.Todo.map(td => 
-               <div key={td.id} className="d-flex border bg-light mt-2">
+               <div key={td.id} className="d-flex border-top mt-2 p-2">
                    <div className="px-2 w-50 align-self-center">{td.TodoText}</div> 
-                   {/* <button className="btn btn-danger px-4" onClick={() =>  {deleteTodo(todo)}}>Delete</button> */}
+                   <button className="btn btn-danger px-4" onClick={handleDelete(td.id)}>Delete</button>
                    <div className="align-self-center px-2">last Updated On: </div>
                 </div>)
             }

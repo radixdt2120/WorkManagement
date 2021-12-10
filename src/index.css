@@ -36,3 +36,7 @@ code {
 .bg-gray{
   background-color: white;
 }
+
+.bg-todo {
+  background-color: aliceblue;
+}

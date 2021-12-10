@@ -28,7 +28,7 @@ const Navbar = () => {
                                 <Link to="/dashboard" className="nav-link">Dashboard</Link>
                             </li>
                             <li className="nav-item btn btn-info  p-0 px-2"> 
-                                <Link to="/profile" className="nav-link"> <i className="fa fa-user"></i> {user.FullName}</Link>
+                                <Link to="/profile" className="nav-link"> <i className="fa fa-user "></i> Ankuriyo</Link>
                             </li>
                         </ul>
                     </div>

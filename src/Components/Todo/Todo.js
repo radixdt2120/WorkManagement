@@ -9,22 +9,25 @@ const Todo = () => {
     const [listCreateSuccess, setListCreateSuccess] = useState(false);
     const [todoList, setTodoList] = useState({
         Title: '',
-        todos: []
+        Todo: []
     });
     const [singleTodo , setSingleTodo] = useState('');
     const [selectedList , setSelectedList] = useState();
 
     const addList = async () => {
-        setTodoList({
-            ...todoList,
-            todos : [...todoList.todos,{"TodoText" : singleTodo}]
-        })
-        const todoItem =  {Title : todoList.Title , Todo : [...selectedList.Todo , {"TodoText" : singleTodo}]}
-        // delete todoItem.todos
-        const res = await todoServices.updateTodoList(selectedList.id ,todoItem)
-        console.log("res : ", res);
-        setSelectedList(res)
-
+        if(singleTodo.trim().length >=3){
+            setTodoList({
+                ...todoList,
+                Todo : [...todoList.Todo,{"TodoText" : singleTodo}]
+            })
+            const todoItem =  {Title : todoList.Title , Todo : [...selectedList.Todo , {"TodoText" : singleTodo}]}
+            const res = await todoServices.updateTodoList(selectedList.id ,todoItem)
+            setSelectedList(res);
+            setSingleTodo('')
+        }
+        else{
+            alert("Please enter more then Three Latter");
+        }
     }
     const handleChange = (e) => {
         setShowList(true)
@@ -48,6 +51,10 @@ const Todo = () => {
         })
         setFilteredList(newfilter)
     }
+    const handleDelete = (id) => {
+        console.log("id");
+
+    }
 
     useEffect(() => {
         const getAllTodoLists = async () => {
@@ -59,14 +66,18 @@ const Todo = () => {
     }, [listCreateSuccess])
 
     const createNewList = async (title) => {
-        const res = await todoServices.addTodoList({ Title: title })
-        if (res.id) {
-            setListCreateSuccess(!listCreateSuccess)
-            setSelectedList(res)
+        if(title.trim().length >=3 ){
+            const res = await todoServices.addTodoList({ Title: title })
+            if (res.id) {
+                setListCreateSuccess(!listCreateSuccess)
+                setSelectedList(res)
+            }
+        }
+        else{
+            alert("Please enter more then Three Latter");
         }
     }
-
-    console.log(selectedList);
+    // console.log(selectedList);
     return (
         <div>
             <div className="border" style={{ cursor: "pointer" }} >
@@ -88,10 +99,10 @@ const Todo = () => {
                     </div>
                 }
 
+                <input type="text" name="Title" className="m-4" value={singleTodo} onChange={(e) => setSingleTodo(e.target.value)} placeholder="Add Todo Items" />
+                <button className="btn btn-primary" onClick={addList} >Add Item</button>
             </div>
-            <input type="text" name="Title" className="m-4" onChange={(e) => setSingleTodo(e.target.value)} />
-            <button className="btn btn-primary" onClick={addList} >Add Todo</button>
-            <TodoList todo={selectedList}/>
+            <TodoList todo={selectedList} handleDelete={handleDelete}/>
         </div>
     )
 }
