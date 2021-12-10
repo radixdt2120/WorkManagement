@@ -1,14 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import TodayTiming from '../Components/TodayTiming'
 import services from '../services/service'
+import { MyContext } from '../context/context'
+
 
 const Dashboard = () => {
 
     const [data, setData] = useState([])
     const [showId, setShowId] = useState("")
+    const value = useContext(MyContext)
+    
     useEffect(() => {
+        console.log(value);
         async function getData() {
-            const res = await services.getDataById(1)
+            const res = await services.getDataById(value.user.id)
             console.log(res);
             setData(res)
         }

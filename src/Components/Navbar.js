@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import TodayHeader from './TodayHeader'
-
+import { MyContext } from '../context/context'
 const Navbar = () => {
+
+    const {user} = useContext(MyContext)
+
     return (
         <section className="sticky-top">
             <TodayHeader />
@@ -25,7 +28,7 @@ const Navbar = () => {
                                 <Link to="/dashboard" className="nav-link">Dashboard</Link>
                             </li>
                             <li className="nav-item btn btn-info  p-0 px-2"> 
-                                <Link to="/profile" className="nav-link"> <i className="fa fa-user"></i> Smit vadhiya</Link>
+                                <Link to="/profile" className="nav-link"> <i className="fa fa-user"></i> {user.FullName}</Link>
                             </li>
                         </ul>
                     </div>

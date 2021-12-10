@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 
+import {MyContext} from "../context/context"
 const Profile = () => {
+    const value = useContext(MyContext)
     const [title, setTitle] = useState("")
     const [isMatch, setIsMatch] = useState(false)
     const [filterTodo, setFilterTodo] = useState([])

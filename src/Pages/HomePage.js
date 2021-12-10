@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import TimingDisplay from '../Components/TimingDisplay'
 import AddInOut from '../Components/AddInOut'
 import TodayTiming from '../Components/TodayTiming'
@@ -6,22 +6,24 @@ import service from '../services/service'
 import { getTodayDate } from '../utils/Utility'
 import Todo from '../Components/Todo/Todo'
 
+import {MyContext} from "../context/context"
 
 const HomePage = () => {
+
+    const {user} = useContext(MyContext)
     
     const [totalTime, setTotalTime] = useState({})
 
     useEffect(async () => {
+        console.log(user);
         const getData = async () => {
-            const Timings = await service.getTodayData(1,getTodayDate())
+            const Timings = await service.getTodayData(user.id,getTodayDate())
             if(Timings.length > 0){
                 setTotalTime({...Timings[0]})
             } 
         }
         getData()
-    },[]);
-   
-
+    },[user]);
 
     return (
         <section className="">
