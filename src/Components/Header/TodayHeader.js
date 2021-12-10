@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getTodayDate } from '../utils/Utility'
+import { getTodayDate } from '../../utils/Utility'
 
 const TodayHeader = () => {
     const [timer, setTimer] = useState("00:00:00");

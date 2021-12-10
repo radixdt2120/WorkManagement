@@ -3,13 +3,17 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import {ContextApis} from './context/context';
-
+import { BrowserRouter as Router } from "react-router-dom";
+import {Routes ,Route} from "react-router-dom";
+import NotFound from './Pages/404';
 
 ReactDOM.render(
   <React.StrictMode>
-    <ContextApis>
-      <App />
-    </ContextApis>
+    <Router>
+      <ContextApis>
+        <App />
+      </ContextApis>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

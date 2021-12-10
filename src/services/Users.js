@@ -6,8 +6,8 @@ class services {
         try {
             const res = await axios.get(`${BASR_URL}/users/${id}`)
             return await res.data
-        } catch(e){
-            console.log(e);
+        } catch(error){
+            console.log(error);
         }
     }
 

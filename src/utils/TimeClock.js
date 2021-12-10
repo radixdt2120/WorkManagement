@@ -1,8 +1,6 @@
 const StratClock = (startTime,setTemp) => {
-    console.log(startTime);
     var hour = parseInt(startTime.split(":")[0])
     var minute = parseInt(startTime.split(":")[1])
-    console.log(hour,minute);
     if(minute === 59){
         minute = 0
         if(hour === 23){

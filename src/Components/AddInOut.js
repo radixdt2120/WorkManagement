@@ -10,7 +10,7 @@ const initialForm = {
     BreakDescription : "",
 }
 
-const AddInOut = ({data, setData}) => {
+const AddInOut = ({totalTime, setTotalTime}) => {
     
     var dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
     const [formData, setFormData] = useState({...initialForm})    
@@ -18,8 +18,8 @@ const AddInOut = ({data, setData}) => {
     const [isOutTimeNull, setIsOutTimeNull] = useState(false)
 
     useEffect(() => {
-        if(Object.keys(data).length !== 0 && data.Timings.length > 0){
-            const myData = data.Timings
+        if(Object.keys(totalTime).length !== 0 && totalTime.Timings.length > 0){
+            const myData = totalTime.Timings
             var lastnode = myData[myData.length-1]
             if(!(lastnode.OutTime === null) && !(lastnode.OutTime === "")){
                 setIsOutTimeNull(false)
@@ -33,7 +33,7 @@ const AddInOut = ({data, setData}) => {
         } else {
             setIsOutTimeNull(false)
         }
-    }, [data])
+    }, [totalTime])
 
     const handleChange = (e) => {
         const {name,value} = e.target
@@ -42,11 +42,11 @@ const AddInOut = ({data, setData}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if(Object.keys(data).length !== 0) {
+        if(Object.keys(totalTime).length !== 0) {
             var isValid = true
             if(!isOutTimeNull){
-                if(data.Timings.length > 0){
-                    isValid = validateTime(data.Timings[data.Timings.length-1].OutTime,formData.InTime)   
+                if(totalTime.Timings.length > 0){
+                    isValid = validateTime(totalTime.Timings[totalTime.Timings.length-1].OutTime,formData.InTime)   
                 } else {
                     isValid = true
                 }
@@ -56,12 +56,12 @@ const AddInOut = ({data, setData}) => {
 
             if(isValid){
                 if(isOutTimeNull) {
-                    const tempData = data.Timings.find(item => item.OutTime === null || item.OutTime === "")
+                    const tempData = totalTime.Timings.find(item => item.OutTime === null || item.OutTime === "")
                     tempData.OutTime = formData.OutTime
                     tempData.BreakDescription = formData.BreakDescription
                     tempData.WorkDescription = formData.WorkDescription
                 } else {
-                    data.Timings.push({
+                    totalTime.Timings.push({
                         ...formData,OutTime : null,
                     })
                 }
@@ -69,12 +69,9 @@ const AddInOut = ({data, setData}) => {
                 alert("wrong entry")
                 return
             }
-            console.log(data.Timings);
-            //const res =  await services.updateTodayData(data.id,data)
-            var res =  await services.updateTodayData(data.id,data)
-            console.log(res);
+            var res =  await services.updateTodayData(totalTime.id,totalTime)
             if(res){
-                setData(res)
+                setTotalTime(res)
                 setFormData({...formData , WorkDescription : ""})
                 closeModal("closeIn")
                 closeModal("closeOut")
@@ -93,7 +90,7 @@ const AddInOut = ({data, setData}) => {
 
             var newData = await services.addNewData(body)
             if(newData) {
-                setData(newData)
+                setTotalTime(newData)
                 const myModal = document.getElementById("closeIn")
                 myModal.setAttribute('data-bs-dismiss', 'modal');
                 myModal.click()
@@ -114,7 +111,7 @@ const AddInOut = ({data, setData}) => {
    
 
     return (
-        <div className="d-flex justify-content-evenly">
+        <div className="d-flex justify-content-evenly h-100">
             <button className={`btn btn-success w-25 ${isOutTimeNull && "disabled"}`}  data-bs-toggle="modal" data-bs-target="#InModal" onClick={handleBtnClick}>
                 In
             </button>

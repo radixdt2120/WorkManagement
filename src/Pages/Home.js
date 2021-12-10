@@ -8,14 +8,13 @@ import Todo from '../Components/Todo/Todo'
 
 import {MyContext} from "../context/context"
 
-const HomePage = () => {
+const Home = () => {
 
     const {user} = useContext(MyContext)
     
     const [totalTime, setTotalTime] = useState({})
 
-    useEffect(async () => {
-        console.log(user);
+    useEffect(() => {
         const getData = async () => {
             const Timings = await service.getTodayData(user.id,getTodayDate())
             if(Timings.length > 0){
@@ -26,16 +25,24 @@ const HomePage = () => {
     },[user]);
 
     return (
-        <section className="">
-            <TimingDisplay totalTime={totalTime} />
-           <section className="container-fluid">
-                <div className="row">
+        <div className="">
+            <section className="py-2 bg-white container-fluid">
+                <TimingDisplay totalTime={totalTime} />
+            </section>
+
+            <section className="py-3 bg-light container-fluid">
+                <div className="row ">
                     <div className="col-12 col-md-4">
-                        <AddInOut data={totalTime} setData={setTotalTime} />
+                        <AddInOut totalTime={totalTime} setData={setTotalTime} />
                     </div>
                     <div className="col-12 col-md-8">
                         <TodayTiming totalTime={totalTime} setTotalTime={setTotalTime} />
                     </div>
+                </div>
+            </section>
+
+           <section className="container-fluid">
+                <div className="row">
                     {/* todos */}
 
                     <div className="col-12 col-md-4 mt-lg-5">
@@ -48,8 +55,8 @@ const HomePage = () => {
                 </div>
            </section>
         
-        </section>
+        </div>
     )
 }
 
-export default HomePage
+export default Home

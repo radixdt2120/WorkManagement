@@ -35,11 +35,12 @@ const Todo = () => {
             ...todoList,
             [e.target.name]: e.target.value,
         });
-        var filteredData = allTodoLists.filter(i => {
-            if (e.target.value.length >= 3) {
+        var filteredData = []
+        if (e.target.value.length >= 3) {
+            filteredData = allTodoLists.filter(i => {
                 return i.Title.toLowerCase().includes(e.target.value)
-            }
-        })
+            })
+        }
         const newfilter = filteredData.sort((a, b) => {
             if (a.Title < b.Title) {
                 return -1;
@@ -52,7 +53,6 @@ const Todo = () => {
         setFilteredList(newfilter)
     }
     const handleDelete = (id) => {
-        console.log("id");
 
     }
 
@@ -77,7 +77,6 @@ const Todo = () => {
             alert("Please enter more then Three Latter");
         }
     }
-    // console.log(selectedList);
     return (
         <div>
             <div className="border" style={{ cursor: "pointer" }} >

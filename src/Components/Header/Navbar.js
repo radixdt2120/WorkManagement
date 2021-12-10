@@ -1,19 +1,19 @@
 import React, { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import TodayHeader from './TodayHeader'
-import { MyContext } from '../context/context'
+import { MyContext } from '../../context/context'
 const Navbar = () => {
 
     const {user} = useContext(MyContext)
 
     return (
         <section className="sticky-top">
-            <TodayHeader />
-            <nav className="navbar navbar-dark navbar-expand-lg bg-dark">
-                <div className="container-fluid p-2 px-5">
+            {/* <TodayHeader /> */}
+            <nav className="navbar navbar-dark navbar-expand-lg bg--primary">
+                <div className="container-fluid  px-5">
                     <div className="navbar-brand text-decoration-none">
                         <Link to="/" className="text-decoration-none text-white" >
-                            <img src="./output-onlinepngtools.png" alt="logo" height="85px" />
+                            <img src="./logo2.png" alt="logo" height="85px" />
                         </Link>
                     </div>
                     <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">

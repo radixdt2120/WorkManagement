@@ -1,25 +1,22 @@
 import React, { useState } from 'react'
 import services from '../services/service'
 import closeModal from '../utils/CloseModal'
-import { validateTime } from '../utils/Utility'
 const initialState = {
     InTime : "",
     WorkDescription : "",  
     OutTime : "",
     BreakDescription : "",
 }
+
 const TodayTiming = ({totalTime,setTotalTime}) => {
 
     const [formData, setFormData] = useState({...initialState})
 
     const handleEditClick = (id) => {
-        console.log(totalTime);
-        console.log(id);
-        const timings = [...totalTime.Timings]
-        const timeData = {...timings.find(item => item.id === id)}
+        const timeData = {...totalTime.Timings.find(item => item.id === id)}
         setFormData({...timeData})
-
     }
+
     const handleChange = (e) => {
         const {name,value} = e.target
         setFormData({...formData , [name] : value})
@@ -27,23 +24,16 @@ const TodayTiming = ({totalTime,setTotalTime}) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(formData);
-        
         const data = {...totalTime}
        
-        var temp = data.Timings.map(item => {
+        var newTimings = data.Timings.map(item => {
             if(item.id === formData.id)
-            {
                 return formData
-            }
             return item
         })
-       var res =  await services.updateTodayData(totalTime.id,{...data,Timings : temp})
+       var res =  await services.updateTodayData(totalTime.id,{...data,Timings : newTimings})
        if(res){
             setTotalTime(res)
-            // const myModal = document.getElementById("closeUpdate")
-            // myModal.setAttribute('data-bs-dismiss', 'modal');
-            // myModal.click()
             closeModal("closeUpdate")
             res = undefined
         }
@@ -51,39 +41,46 @@ const TodayTiming = ({totalTime,setTotalTime}) => {
 
         
     }
+    
     const handleDeleteClick = async (id) => {
         if(window.confirm("delete entry?")){
-            console.log(id);
-            const timings = [...totalTime.Timings]
-            timings.splice(timings.indexOf(timings.find(item => item.id === id)),1)
-            console.log(timings);
-            var res =  await services.updateTodayData(totalTime.id,{...totalTime, Timings : [...timings]})
-            setTotalTime(res)
+            var newTimings = totalTime.Timings.filter(item => item.id != id)
+            var res =  await services.updateTodayData(totalTime.id,{...totalTime, Timings : [...newTimings]})
+            if(res){
+                setTotalTime(res)
+            }
         }
     }
 
     return (
         <div>
-            <table className="table table-bordered table-hover table-striped table">
-                <thead className="table">
+            <table className="table table-bordered table-hover table-striped table-sm">
+                <thead className="">
                     <tr>
                         <th>In Time</th>
                         <th>Out Time</th>
                         <th>Work Description</th>
                         <th>Break Description</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    {totalTime.Timings && totalTime.Timings.map(item => <tr key={item.id}>
-                        <td>{item.InTime && item.InTime.slice(0,5)}</td>
-                        <td>{item.OutTime && item.OutTime.slice(0,5)}</td>
-                        <td>{item.WorkDescription}</td>
-                        <td>{item.BreakDescription}</td>
-                        <td className="cursor-pointer" onClick={() => handleEditClick(item.id)}  data-bs-toggle="modal" data-bs-target="#editTime"><i className="fa fa-edit"></i></td>
-                        <td className="cursor-pointer" onClick={() => handleDeleteClick(item.id)} ><i className="fa fa-trash"></i></td>
-                    </tr>)}
+                    {totalTime.Timings && totalTime.Timings.map(item => (
+                        <tr key={item.id}>
+                            <td>{item.InTime && item.InTime.slice(0,5)}</td>
+                            <td>{item.OutTime && item.OutTime.slice(0,5)}</td>
+                            <td>{item.WorkDescription}</td>
+                            <td>{item.BreakDescription}</td>
+                            <td className="cursor-pointer d-flex justify-content-around"   data-bs-toggle="modal" data-bs-target="#editTime">
+                                <span className="mx-1">
+                                    <i className="fa fa-edit" onClick={() => handleEditClick(item.id)}></i>
+                                </span>
+                                <span className="mx-1">
+                                    <i className="fa fa-trash" onClick={() => handleDeleteClick(item.id)}></i>
+                                </span>
+                            </td>
+                        </tr>
+                    ))}
                    
                 </tbody>
             </table>
@@ -116,7 +113,7 @@ const TodayTiming = ({totalTime,setTotalTime}) => {
                                     </div>
                             </div>
                             <div className="modal-footer ">
-                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeIn" id="closeUpdate">Close</button>
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" id="closeUpdate">Close</button>
                                 <button type="submit" className="btn btn-success"  >Update Data</button>
                             </div>
                         </form>

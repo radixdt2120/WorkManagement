@@ -5,12 +5,10 @@ import Clock from './Clock'
 
 const TimingDisplay = ({totalTime, setTotalTime}) => {
 
-
-    //const [totalTime, setTotalTime] = useState({})
-
     const [inTime, setInTime] = useState("00:00")
     const [totalIn, setTotalIn] = useState("00:00")
     const [totalOut, setTotalOut] = useState("00:00")
+    
     const [inInterval, setInInterval] = useState("")
     const [outInterval, setOutInterval] = useState("")
 
@@ -19,6 +17,7 @@ const TimingDisplay = ({totalTime, setTotalTime}) => {
             totalInFunction(totalTime.Timings)
         }
     },[totalTime]);
+
 
     const totalInFunction = (data) => {
         var TempInTime = "00:00"
@@ -35,8 +34,7 @@ const TimingDisplay = ({totalTime, setTotalTime}) => {
                     TempInTime = addTime(TempInTime,subtractTime(startTime, endTime))
                 }
             });
-            // const temp = data.map(item => {
-            // })
+
             const lastNode = data[data.length-1]
 
             clearInterval(inInterval)
@@ -62,13 +60,12 @@ const TimingDisplay = ({totalTime, setTotalTime}) => {
     }
 
     return (
-        <div className="text-center flex-wrap d-flex gap-2   justify-content-center" >
+        <div className="text-center flex-wrap d-flex gap-2 justify-content-center py-3" >
             <Clock bg="primary" title="First In" time={inTime} />
 
             <Clock bg="success" title="Total In" time={totalIn} />
 
             <Clock bg="danger" title="Total Out" time={totalOut} />
-            
         </div>
     )
 }

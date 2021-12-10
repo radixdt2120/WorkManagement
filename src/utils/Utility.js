@@ -16,7 +16,6 @@ const getNowTime = () => {
 }
 
 const validateTime = (inTime, outTime) => {
-    console.log(inTime, outTime);
     const inHour = parseInt(inTime.split(":")[0])
     const inMinute = parseInt(inTime.split(":")[1])
 

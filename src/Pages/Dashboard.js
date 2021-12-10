@@ -7,26 +7,24 @@ import { MyContext } from '../context/context'
 const Dashboard = () => {
 
     const [data, setData] = useState([])
-    const [showId, setShowId] = useState("")
+    //const [showId, setShowId] = useState("")
     const value = useContext(MyContext)
     
     useEffect(() => {
-        console.log(value);
         async function getData() {
             const res = await services.getDataById(value.user.id)
-            console.log(res);
             setData(res)
         }
         getData()
-    }, [])
+    })
 
-    const setMyId = (id) => {
-        if(showId === id){
-            setShowId("")
-        } else {
-            setShowId(id)
-        }
-    }
+    // const setMyId = (id) => {
+    //     if(showId === id){
+    //         setShowId("")
+    //     } else {
+    //         setShowId(id)
+    //     }
+    // }
 
     return (
         <div className="container">

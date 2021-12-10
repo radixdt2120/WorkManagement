@@ -8,7 +8,6 @@ class todoServices {
         return await res.data
     }
     static async updateTodoList(id,todoList) { 
-        console.log(todoList);
         const res = await axios.put(`${BASR_URL}/todo-lists/${id}`,todoList)
         return await res.data
     }

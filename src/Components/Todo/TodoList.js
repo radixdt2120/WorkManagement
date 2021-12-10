@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const TodoList = ({todo , handleDelete}) => {
-    console.log(handleDelete);
     return (
         <div className="bg-todo border mt-5">
             <h1 className="p-2">{todo ? todo.Title : ''}</h1>

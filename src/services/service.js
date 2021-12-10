@@ -6,8 +6,8 @@ class services {
         try {
             const res = await axios.get(`${BASR_URL}/working-times?user.id=${id}&Date=${date}`)
             return await res.data
-        } catch(e){
-            console.log(e);
+        } catch(error){
+            console.log(error);
         }
     }
 
